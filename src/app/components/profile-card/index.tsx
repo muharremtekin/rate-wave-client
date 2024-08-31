@@ -36,41 +36,40 @@ const UserProfile: React.FC = () => {
                     quality={100}
                     className='w-full max-h-96 min-h-96 object-cover object-bottom'
                 />
-                <div className='w-full bg-white absolute bottom-0 left-0 py-8'>
-                    <div className='w-2/5 flex flex-col mx-auto'>
-                        <p className='text-4xl font-bold'>Muharrem Tekin</p>
-                        <p className='text-xl font-light opacity-60'>Backend Developer <span className='text-xs'>/ 8 Yr. Experience</span></p>
-                        <div className='flex flex-row opacity-60 my-4'>
-                            <div className='flex flex-row items-center mr-4 text-xl cursor-pointer'>
-                                <FaLocationDot />
-                            </div>
-                            <div className='flex flex-row items-center mr-4 text-xl cursor-pointer'>
-                                <Link href='https://twitter.com' target='_blank'>
-                                    <FaLinkedin />
-                                </Link>
-                            </div>
-                            <div className='flex flex-row items-center text-xl cursor-pointer mr-4'>
-                                <Link href='https://twitter.com' target='_blank'>
-                                    <FaTwitter />
-                                </Link>
-                            </div>
-                            <div className='flex flex-row items-center text-xl cursor-pointer'>
-                                <Link href='https://twitter.com'>
-                                    <IoMdMail />
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='absolute bottom-10 left-40 transform  w-1/6 rounded-full'>
+                <div className='w-full bg-white absolute bottom-0 left-0 py-2 md:py-4 lg:py-8'>
+                    <div className='absolute bottom-20 md:bottom-16 lg:bottom-10 left-6 md:left-20 lg:left-40 transform w-1/5 lg:w-1/6 rounded-full'>
                         <Image
                             src='/mtkn.jpeg'
                             alt='profile'
-                            // layout="responsive"
                             width={400}
                             height={400}
                             quality={100}
                             className='w-full border-4 shadow-lg border-white object-cover object-center rounded-full'
                         />
+                    </div>
+                    <div className='w-2/5 md:w-2/5 lg:w-4/12 flex flex-col mx-auto'>
+                        <p className='text-xl md:text-2xl lg:text-4xl font-bold'>Muharrem Tekin</p>
+                        <p className='text-sm md:text-lg lg:text-xl font-light opacity-60'>Backend Developer <span className='text-xs'>/ 8 Yr. Experience</span></p>
+                        <div className='flex flex-row opacity-60 my-4'>
+                            <div className='flex flex-row items-center mr-4 text-sm md:text-base lg:text-xl cursor-pointer'>
+                                <FaLocationDot />
+                            </div>
+                            <div className='flex flex-row items-center mr-4 text-sm md:text-base lg:text-xl cursor-pointer'>
+                                <Link href='https://twitter.com' target='_blank'>
+                                    <FaLinkedin />
+                                </Link>
+                            </div>
+                            <div className='flex flex-row items-center mr-4 text-sm md:text-base lg:text-xl cursor-pointer'>
+                                <Link href='https://twitter.com' target='_blank'>
+                                    <FaTwitter />
+                                </Link>
+                            </div>
+                            <div className='flex flex-row items-center mr-4 text-sm md:text-base lg:text-xl cursor-pointer'>
+                                <Link href='https://twitter.com'>
+                                    <IoMdMail />
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
