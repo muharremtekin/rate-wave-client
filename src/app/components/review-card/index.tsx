@@ -2,11 +2,11 @@ import Image from 'next/image'
 import React from 'react'
 import { IoIosStar, IoIosStarOutline } from 'react-icons/io'
 
-function index({ image, name, date, review, star }) {
+function index({ image, name, date, review, star }: { image: string, name: string, date: string, review: string, star: number }) {
 
     const placeholderImage = '/mtkn.jpeg';
 
-    const renderStars = (star) => {
+    const renderStars = (star: number) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             if (i <= star) {

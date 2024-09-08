@@ -6,15 +6,12 @@ import { SearchModal } from '@/app/components'
 import { FaLocationDot, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
-import { FaDoorOpen } from "react-icons/fa";
-
-
 
 
 const UserProfile: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState<{ id: number; profilePic: string; name: string; surname: string; title: string; url: string; }[]>([]);
     const handleSearchClick = () => {
         setIsModalOpen(true);
         document.body.style.overflow = 'hidden';

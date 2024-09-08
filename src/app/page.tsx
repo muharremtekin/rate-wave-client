@@ -3,24 +3,31 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { IoSearch } from 'react-icons/io5';
-import { SearchModal } from '@/app/components'; 
+import { SearchModal } from '@/app/components';
 
-function HomePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+interface SearchResult {
+  id: number;
+  name: string;
+  surname: string;
+  title: string;
+  profilePic: string;
+  url: string;
+}
 
+const HomePage: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleSearchClick = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = 'auto'; 
+    document.body.style.overflow = 'auto';
   };
-
 
   useEffect(() => {
     if (searchTerm.length > 0) {
@@ -38,7 +45,7 @@ function HomePage() {
 
   return (
     <div className='w-full min-h-screen bg-gray-100 flex flex-col items-center py-8'>
-      <p className='text-5xl font-bold text-slate-600 '>
+      <p className='text-5xl font-bold text-slate-600'>
         RATE<span className='font-light'>WAVE</span>
       </p>
       <section className='my-10 text-center px-5'>
@@ -47,7 +54,7 @@ function HomePage() {
           Kişisel ders veren, danışmanlık hizmeti sunan profesyonelleri arayın ve onların profillerine yorum yapın. Müşteri deneyimlerinizi paylaşarak diğer kullanıcılara yardımcı olun.
         </p>
       </section>
-      <div className='w-1/2 lg:w-1/3  mb-10 border-b border-black flex items-center gap-x-2 px-2 lg:px-4 py-2  cursor-text' onClick={handleSearchClick}>
+      <div className='w-1/2 lg:w-1/3 mb-10 border-b border-black flex items-center gap-x-2 px-2 lg:px-4 py-2 cursor-text' onClick={handleSearchClick}>
         <IoSearch className='opacity-70 text-2xl' />
         <p className='opacity-70 block'>Search</p>
       </div>
@@ -81,7 +88,6 @@ function HomePage() {
               </div>
             </div>
           </Link>
-
         </div>
       </section>
       <SearchModal

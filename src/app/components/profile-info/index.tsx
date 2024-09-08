@@ -7,9 +7,25 @@ import { IoMail } from 'react-icons/io5'
 import { LuExternalLink } from 'react-icons/lu'
 import { PiCertificateFill } from 'react-icons/pi'
 
-function index({ name, title, about, degree, degreeLink, degreeSchool, degreeDate, mobile, office, mail, rate, star, reviews }) {
+interface ProfileInfoProps {
+    name: string;
+    title: string;
+    about: string;
+    degree: string;
+    degreeLink: string;
+    degreeSchool: string;
+    degreeDate: string;
+    mobile: string;
+    office: string;
+    mail: string;
+    rate: number;
+    star: number;
+    reviews: number;
+}
 
-    const renderStars = (star) => {
+function index({ name, title, about, degree, degreeLink, degreeSchool, degreeDate, mobile, office, mail, rate, star, reviews }: ProfileInfoProps) {
+
+    const renderStars = (star: number) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             if (i <= star) {
@@ -61,7 +77,7 @@ function index({ name, title, about, degree, degreeLink, degreeSchool, degreeDat
                     </div>
                     <div className='flex flex-col'>
                         <div className='flex flex-row'>
-                            {renderStars(star)} 
+                            {renderStars(star)}
                         </div>
                         <div className='text-xs font-light'>
                             <p>{reviews} Reviews</p>
@@ -71,8 +87,8 @@ function index({ name, title, about, degree, degreeLink, degreeSchool, degreeDat
                 <div className='h-px w-20 mx-auto bg-slate-400'></div>
                 <div className='flex justify-center text-center '>
                     <div className='flex justify-center text-sm font-normal items-center gap-x-2 my-6 bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded w-2/3 text-center'>
-                        <Link href={`mailto:${{mail}}`}><IoMail className='text-xl' /></Link>
-                        <Link href={`mailto:${{mail}}`} className=''>İletişime Geç</Link>
+                        <Link href={`mailto:${{ mail }}`}><IoMail className='text-xl' /></Link>
+                        <Link href={`mailto:${{ mail }}`} className=''>İletişime Geç</Link>
                     </div>
                 </div>
             </div>

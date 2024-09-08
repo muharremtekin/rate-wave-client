@@ -26,15 +26,15 @@ function Page() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState<{ id: number; name: string; surname: string; title: string; profilePic: string; url: string; }[]>([]);
     const handleSearchClick = () => {
         setIsModalOpen(true);
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden';
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        document.body.style.overflow = 'auto'; 
+        document.body.style.overflow = 'auto';
     };
 
     useEffect(() => {
@@ -58,7 +58,7 @@ function Page() {
         setCertificates([...certificates, { id: newId, degree: "", name: "", institution: "", startDate: "", endDate: "", link: "" }]);
     };
 
-    const removeCertificate = (id) => {
+    const removeCertificate = (id: number) => {
         setCertificates(certificates.filter(certificate => certificate.id !== id));
     };
 
@@ -71,13 +71,13 @@ function Page() {
         setShowNewPassword(!showNewPassword);
     };
 
-    const handleNewPasswordChange = (e) => {
+    const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPass = e.target.value;
         setNewPassword(newPass);
         setIsMatching(newPass === confirmPassword);
     };
 
-    const handleConfirmPasswordChange = (e) => {
+    const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const confirmPass = e.target.value;
         setConfirmPassword(confirmPass);
         setIsMatching(newPassword === confirmPass);
@@ -325,7 +325,14 @@ function Page() {
                 closeModal={closeModal}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                searchResults={searchResults}
+                searchResults={searchResults.map(result => ({
+                    id: result.id,
+                    profilePic: result.profilePic,
+                    name: result.name,
+                    surname: result.surname,
+                    title: result.title,
+                    url: result.url
+                }))}
             />
         </div>
     )

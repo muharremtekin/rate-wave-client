@@ -14,7 +14,7 @@ function Page() {
     const [hoverIndex, setHoverIndex] = useState(-1);
     const [selectedRating, setSelectedRating] = useState(0);
 
-    const handleClick = (index) => {
+    const handleClick = (index: number) => {
         setSelectedRating(index + 1);
     };
 
@@ -75,9 +75,9 @@ function Page() {
                         mobile={"+90 512 345 6789"}
                         office={"+90 224 224 0000"}
                         mail={"mtkn@mail.com"}
-                        rate={"4"}
+                        rate={4}
                         star={4}
-                        reviews={"190"}
+                        reviews={190}
                     />
                 </div>
                 <div className={`w-full lg:w-3/4 mt-10 lg:mt-0 lg:ml-3  rounded ${isSticky ? ' relative lg:absolute right-0' : 'relative'}`}>
