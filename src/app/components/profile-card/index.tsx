@@ -1,12 +1,45 @@
+"use client"
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { SearchModal } from '@/app/components'
 import { FaLocationDot, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
+import { IoSearch } from "react-icons/io5";
+import { FaDoorOpen } from "react-icons/fa";
+
 
 
 
 const UserProfile: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const handleSearchClick = () => {
+        setIsModalOpen(true);
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        document.body.style.overflow = 'auto';
+    };
+
+    useEffect(() => {
+        if (searchTerm.length > 0) {
+            const results = [
+                { id: 1, name: 'Muharrem', surname: 'Tekin', title: 'Back End Developer', profilePic: '/mtkn.jpeg', url: '/profile/mtkn' },
+                { id: 2, name: 'Erdem', surname: 'Arslan', title: 'Front End Developer', profilePic: 'https://media.licdn.com/dms/image/v2/D4D03AQEmGI0yE-M5RA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718235829739?e=1730332800&v=beta&t=XIk99ybAM8DKd9MHzbHhs5_NTVn6vVY1RQA4zXVWznQ', url: '/profile/mtkn' },
+            ].filter(item =>
+                `${item.name} ${item.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setSearchResults(results);
+        } else {
+            setSearchResults([]);
+        }
+    }, [searchTerm]);
+
+
     return (
         <div className='w-full bg-white'>
             <div className='w-5/6 mx-auto flex flex-row justify-between items-center py-4'>
@@ -17,13 +50,14 @@ const UserProfile: React.FC = () => {
                         </p>
                     </div>
                     <div className='w-px h-8 bg-slate-600 mr-10'></div>
-                    <div className='w-full'>
-                        <input type='text' placeholder='Search' name='search' id='search' className='w-full border py-2 px-3 border-slate-300 rounded' />
+                    <div className='w-full flex items-center gap-x-2 border px-2 lg:px-4 py-2 rounded-lg cursor-text' onClick={handleSearchClick}>
+                        <IoSearch className='opacity-50 text-2xl' />
+                        <p className='opacity-50 hidden lg:block'>Search</p>
                     </div>
                 </div>
-                <div className='text-blue-400 border border-blue-400 px-6 py-2 rounded-3xl hover:bg-blue-400 hover:text-white cursor-pointer'>
-                    <button>Sign Up</button>
-                </div>
+                <Link href={"/profile/mtkn"}>
+                    <Image className='h-10 w-10 object-cover rounded-lg' src={"/mtkn.jpeg"} width={100} height={100} quality={100} alt='Profile Photo' />
+                </Link>
             </div>
 
             <div className='relative w-full'>
@@ -73,7 +107,13 @@ const UserProfile: React.FC = () => {
                     </div>
                 </div>
             </div>
-
+            <SearchModal
+                isModalOpen={isModalOpen}
+                closeModal={closeModal}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                searchResults={searchResults}
+            />
         </div>
     );
 };
