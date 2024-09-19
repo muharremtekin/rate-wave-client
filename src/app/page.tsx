@@ -4,14 +4,13 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { IoSearch } from 'react-icons/io5';
 import { SearchModal } from '@/app/components';
+import api from '@/services/api';
 
 interface SearchResult {
-  id: number;
-  name: string;
-  surname: string;
-  title: string;
-  profilePic: string;
-  url: string;
+  userName: number;
+  fullName: string;
+  profilePicture: string;
+  profession: string;
 }
 
 const HomePage: React.FC = () => {
@@ -30,18 +29,20 @@ const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchTerm.length > 0) {
-      const results = [
-        { id: 1, name: 'Muharrem', surname: 'Tekin', title: 'Backend Developer', profilePic: '/mtkn.jpeg', url: '/profile/mtkn' },
-        { id: 2, name: 'Erdem', surname: 'Arslan', title: 'Front End Developer', profilePic: '/mtkn.jpeg', url: '/profile/erdemarslan' },
-      ].filter(item =>
-        `${item.name} ${item.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchTerm]);
+    const fetchSearchResults = async () => {
+        if (searchTerm.length > 0) {
+            await api.get(`/users?PageNumber=1&PageSize=10&SearchTerm=${searchTerm}`).then((response) => {
+                console.log(response.data);
+                setSearchResults(response.data);
+            });
+
+        } else {
+            setSearchResults([]);
+        }
+    };
+
+    fetchSearchResults();
+}, [searchTerm]);
 
   return (
     <div className='w-full min-h-screen bg-gray-100 flex flex-col items-center py-8'>

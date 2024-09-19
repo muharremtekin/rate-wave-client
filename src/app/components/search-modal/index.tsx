@@ -8,12 +8,10 @@ type SearchModalProps = {
     searchTerm: string;
     setSearchTerm: (term: string) => void;
     searchResults: {
-        id: number;
-        profilePic: string;
-        name: string;
-        surname: string;
-        title: string;
-        url: string;
+        userName: number;
+        fullName: string;
+        profilePicture: string;
+        profession: string;
     }[];
 };
 
@@ -48,23 +46,21 @@ const SearchModal = ({
                 <div className="max-h-60 overflow-y-auto transition-all ease-in-out">
                     {searchResults.length > 0 ? (
                         searchResults.map((result) => (
-                            <div key={result.id} className="flex items-center border-b py-2">
+                            <div key={result.userName} className="flex items-center border-b py-2">
                                 <Image
                                     width={40}
                                     height={40}
                                     quality={100}
-                                    src={result.profilePic}
-                                    alt={`${result.name} ${result.surname}`}
+                                    src={result.profilePicture}
+                                    alt={`${result.fullName} profile picture`}
                                     className="h-10 w-10 rounded-full object-cover mr-4"
                                 />
                                 <div>
-                                    <Link href={result.url} rel="noopener noreferrer">
+                                    <Link href={'/profile/'+result.userName} rel="noopener noreferrer">
                                         <p className="font-bold">
-                                            {result.name} {result.surname}
+                                            {result.fullName} - {result.profession}
                                         </p>
-                                    </Link>
-                                    <Link href={result.url} rel="noopener noreferrer">
-                                        <p className="text-xs text-gray-500">{result.title}</p>
+                                        <p className="text-xs text-gray-500">{result.userName}</p>
                                     </Link>
                                 </div>
                             </div>

@@ -326,12 +326,10 @@ function Page() {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 searchResults={searchResults.map(result => ({
-                    id: result.id,
-                    profilePic: result.profilePic,
-                    name: result.name,
-                    surname: result.surname,
-                    title: result.title,
-                    url: result.url
+                    userName: result.id,
+                    fullName: `${result.name} ${result.surname}`,
+                    profilePicture: result.profilePic,
+                    profession: result.title
                 }))}
             />
         </div>

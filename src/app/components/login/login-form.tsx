@@ -1,10 +1,10 @@
 import React from 'react';
 import Header from './header';
-import InputField from './input-field';
 import PasswordField from './password-field';
 import RememberMe from './remember-me';
 import SignInButton from './signin-button';
 import SignUpLink from './signup-link';
+import InputField from '../common/input-field';
 
 interface LoginFormProps {
     showPassword: boolean;
@@ -34,7 +34,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 type="text"
                 placeholder="Username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
             />
             <PasswordField
                 showPassword={showPassword}
