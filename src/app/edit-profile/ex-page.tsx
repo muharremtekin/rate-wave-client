@@ -1,13 +1,15 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { SearchModal } from '@/app/components'
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaSquareInstagram, FaLinkedin, FaSquareXTwitter, FaYoutube, FaMedium, FaSquareGithub } from "react-icons/fa6";
 import { FaRegEdit, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { LuPlusCircle } from "react-icons/lu";
-import { IoSearch } from "react-icons/io5";
+import api from '@/services/api'
+import { UserData } from '@/types/user'
+
+import Header from '@/app/components/common/header'
 
 
 
@@ -22,34 +24,39 @@ function Page() {
     const [certificates, setCertificates] = useState([
         { id: 1, degree: "", name: "", institution: "", startDate: "", endDate: "", link: "" }
     ]);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState<{ id: number; name: string; surname: string; title: string; profilePic: string; url: string; }[]>([]);
+
+    // Fetch user data
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get<UserData>(`/users/me`);
+                console.log('User data:', response.data);
+                setUserData(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Hata durumunu yönetin
+            }
+        };
+        fetchUserData();
+    }, []);
+
+
     const handleSearchClick = () => {
         setIsModalOpen(true);
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden';
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        document.body.style.overflow = 'auto'; 
+        document.body.style.overflow = 'auto';
     };
 
-    useEffect(() => {
-        if (searchTerm.length > 0) {
-            const results = [
-                { id: 1, name: 'Muharrem', surname: 'Tekin', title: 'Back End Developer', profilePic: '/mtkn.jpeg', url: '/profile/mtkn' },
-                { id: 2, name: 'Erdem', surname: 'Arslan', title: 'Front End Developer', profilePic: 'https://media.licdn.com/dms/image/v2/D4D03AQEmGI0yE-M5RA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718235829739?e=1730332800&v=beta&t=XIk99ybAM8DKd9MHzbHhs5_NTVn6vVY1RQA4zXVWznQ', url: '/profile/mtkn' },
-            ].filter(item =>
-                `${item.name} ${item.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setSearchResults(results);
-        } else {
-            setSearchResults([]);
-        }
-    }, [searchTerm]);
 
 
 
@@ -58,8 +65,10 @@ function Page() {
         setCertificates([...certificates, { id: newId, degree: "", name: "", institution: "", startDate: "", endDate: "", link: "" }]);
     };
 
-    const removeCertificate = (id) => {
-        setCertificates(certificates.filter(certificate => certificate.id !== id));
+    const removeCertificate = (id: number) => {
+        if (userData?.qualifications) {
+            setCertificates(certificates.filter(certificate => certificate.id !== id));
+        }
     };
 
 
@@ -71,13 +80,13 @@ function Page() {
         setShowNewPassword(!showNewPassword);
     };
 
-    const handleNewPasswordChange = (e) => {
+    const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPass = e.target.value;
         setNewPassword(newPass);
         setIsMatching(newPass === confirmPassword);
     };
 
-    const handleConfirmPasswordChange = (e) => {
+    const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const confirmPass = e.target.value;
         setConfirmPassword(confirmPass);
         setIsMatching(newPassword === confirmPass);
@@ -86,7 +95,7 @@ function Page() {
 
     return (
         <div className='w-5/6 mx-auto mt-6 mb-10'>
-            <div className='flex flex-row justify-between items-center'>
+            {/* <div className='flex flex-row justify-between items-center'>
                 <div className='flex flex-col items-start'>
                     <h2 className='text-3xl font-bold text-slate-600'>Welcome <span className='font-light'>Mtkn</span></h2>
                     <p className='text-sm font-light'>Edit your profile!</p>
@@ -99,10 +108,11 @@ function Page() {
                         <Image className='h-10 w-10 object-cover rounded-lg' src={"/mtkn.jpeg"} width={100} height={100} quality={100} alt='Profile Photo' />
                     </Link>
                 </div>
-            </div>
+            </div> */}
+            <Header  />
             <div className='bg-white my-10 p-4 rounded-lg'>
                 <div>
-                    <div className='w-full h-40 lg:h-64  relative'>
+                    {/* <div className='w-full h-40 lg:h-64  relative'>
                         <Image className='w-full h-full object-cover rounded ' src={"/default-bg.jpeg"} width={2000} height={1000} quality={100} alt='Profile Photo' />
                         <div className='absolute flex flex-row items-center gap-x-4 rounded-xl p-3 backdrop-blur-sm bottom-3 right-4 lg:bottom-6 lg:right-8 text-white'>
                             <button>
@@ -112,7 +122,8 @@ function Page() {
                                 <FaRegEdit className='text-lg lg:text-2xl' />
                             </button>
                         </div>
-                    </div>
+                    </div> */}
+
                     <div className='my-8 text-xl font-normal px-0 lg:px-10'><p>General Settings</p></div>
                     <div className='w-full h-px px-10 bg-slate-200 mb-6'></div>
                     <div>
@@ -120,11 +131,18 @@ function Page() {
                             <div className='flex flex-row items-start lg:items-center justify-between w-full '>
                                 <div className='flex flex-col lg:flex-row items-start lg:items-center gap-x-4'>
                                     <div className='w-20 h-20 lg:h-24 lg:w-24 '>
-                                        <Image className='h-full w-full object-cover rounded-full' src={"/mtkn.jpeg"} width={100} height={100} quality={100} alt='Profile Photo' />
+                                        <Image
+                                            className='h-full w-full object-cover rounded-full'
+                                            src={userData?.profilePicture ?? ""}
+                                            width={100}
+                                            height={100}
+                                            quality={100}
+                                            alt='Profile Photo'
+                                        />
                                     </div>
                                     <div>
-                                        <p className='text-2xl font-bold'>Muharrem Tekin</p>
-                                        <p className='text-xs font-light'>Backend Developer</p>
+                                        <p className='text-2xl font-bold'>{userData?.firstName + " " + userData?.lastName}</p>
+                                        <p className='text-xs font-light'>{userData?.profession}</p>
                                     </div>
                                 </div>
                                 <div className='flex flex-row gap-x-4'>
@@ -141,29 +159,29 @@ function Page() {
                             <div className=' grid grid-cols-1 lg:grid-cols-2 gap-x-0 lg:gap-x-10'>
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='name'>Name</label>
-                                    <input defaultValue={"Muharrem"} type='text' name='name' id='name' placeholder='Name' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.firstName} type='text' name='name' id='name' placeholder='Name' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='surname'>Surname</label>
-                                    <input defaultValue={"Tekin"} type='text' name='surname' id='surname' placeholder='Surname' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.lastName} type='text' name='surname' id='surname' placeholder='Surname' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
 
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='title'>Title</label>
-                                    <input defaultValue={"Backend Developer"} type='text' name='title' id='title' placeholder='Title' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.profession} type='text' name='title' id='title' placeholder='Title' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='experience'>Experience</label>
-                                    <input defaultValue={4} type='number' name='experience' id='experience' placeholder='Experience' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.yearsOfExperience} type='number' name='experience' id='experience' placeholder='Experience' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
 
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='phoneNumber'>Phone Number</label>
-                                    <input defaultValue={"+90 512 345 67 89"} type='text' name='phoneNumber' id='phoneNumber' placeholder='Phone Number' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.phoneNumbers[0]['number'] ?? ""} type='text' name='phoneNumber' id='phoneNumber' placeholder='Phone Number' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
                                 <div className='flex flex-col mb-6'>
                                     <label className='font-light text-sm mb-1' htmlFor='officeNumber'>Office Number</label>
-                                    <input defaultValue={"+90 224 224 00 00"} type='text' name='officeNumber' id='officeNumber' placeholder='Office Number' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                    <input defaultValue={userData?.phoneNumbers[1]['number'] ?? ""} type='text' name='officeNumber' id='officeNumber' placeholder='Office Number' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                                 </div>
 
                                 <div className='flex flex-col mb-6'>
@@ -225,9 +243,9 @@ function Page() {
                     <div className=' mt-24 my-8 text-xl font-normal px-0 lg:px-10'><p>Certificate Settings</p></div>
                     <div className='w-full h-px px-10 bg-slate-200 mb-6'></div>
                     <form className="px-2 lg:px-10 mb-10">
-                        {certificates.map((certificate, index) => (
+                        {userData?.qualifications.map((certificate, index) => (
                             <div key={certificate.id} className='grid grid-cols-1 lg:grid-cols-2 gap-x-10 bg-[#808080] bg-opacity-10 p-4 rounded pt-10 relative mb-10'>
-                                <button type="button" onClick={() => removeCertificate(certificate.id)} className='absolute top-4 right-4 text-xl text-red-400'>
+                                <button type="button" onClick={() => removeCertificate(Number(certificate.id))} className='absolute top-4 right-4 text-xl text-red-400'>
                                     <RiDeleteBin6Line />
                                 </button>
                                 <div className='flex flex-col mb-6'>
@@ -325,7 +343,12 @@ function Page() {
                 closeModal={closeModal}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                searchResults={searchResults}
+                searchResults={searchResults.map(result => ({
+                    userName: result.id,
+                    fullName: `${result.name} ${result.surname}`,
+                    profilePicture: result.profilePic,
+                    profession: result.title
+                }))}
             />
         </div>
     )

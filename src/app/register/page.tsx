@@ -1,4 +1,5 @@
 "use client"
+import api from '@/services/api';
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -7,6 +8,44 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 function Page() {
 
     const [showPassword, setShowPassword] = useState(false);
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [profession, setProfession] = useState('');
+    const [experience, setExperience] = useState('');
+    // const [videoUrl, setVideoUrl] = useState('');
+    const [profilePhoto, setProfilePhoto] = useState('');
+    const [biography, setBiography] = useState('');
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+
+            console.log(name, surname, email, username, password, profession, experience, profilePhoto, biography);
+            const response = await api.post('/users', {
+                "firstName": name,
+                "lastName": surname,
+                "emailAddress": email,
+                "userName": username,
+                "password": password,
+                "profession": profession,
+                "yearsOfExperience": experience,
+                "profilePicture": profilePhoto,
+                "bio": biography,
+            });
+
+            if (response.status === 200) {
+                const data = response.data;
+                console.log(data);
+            } else {
+                console.error(response.data.Message);
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+        }
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -27,26 +66,26 @@ function Page() {
                     <p className=' font-medium italic text-base text-slate-600 my-2 opacity-65'>Welcome to RATEWAVE. Are you ready?</p>
                 </div>
                 <div>
-                    <form className='py-6'>
+                    <form className='py-6' onSubmit={handleRegister}>
                         <div className='grid grid-cols-2 gap-x-4'>
                             <div className='flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='name'>Name</label>
-                                <input type='text' name='name' id='name' placeholder='Name' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='text' name='name' id='name' placeholder='Name' onChange={(e) => setName(e.target.value)} className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                             <div className=' flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='surname'>Surname</label>
-                                <input type='text' name='surname' id='surname' placeholder='Surname' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='text' name='surname' id='surname' placeholder='Surname' onChange={(e) => setSurname(e.target.value)} className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                         </div>
 
                         <div className='grid grid-cols-2 gap-x-4'>
                             <div className='flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='email'>E-Mail</label>
-                                <input type='email' name='email' id='email' placeholder='E-Mail' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='email' name='email' id='email' placeholder='E-Mail' onChange={(e) => setEmail(e.target.value)} className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                             <div className=' flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='surname'>Username</label>
-                                <input type='text' name='username' id='username' placeholder='Username' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='text' name='username' id='username' placeholder='Username' onChange={(e) => setUsername(e.target.value)} className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                         </div>
 
@@ -58,6 +97,7 @@ function Page() {
                                     name='password'
                                     id='password'
                                     placeholder='Password'
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20'
                                 />
                                 <div className='absolute cursor-pointer top-9 right-3' onClick={togglePasswordVisibility}>
@@ -66,7 +106,7 @@ function Page() {
                             </div>
                             <div className=' flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='profession'>Profession</label>
-                                <input type='text' name='profession' id='profession' placeholder='Profession' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='text' name='profession' id='profession' placeholder='Profession' onChange={(e) => setProfession(e.target.value)} className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                         </div>
 
@@ -75,25 +115,31 @@ function Page() {
                         <div className='grid grid-cols-2 gap-x-4'>
                             <div className='flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='experience'>Experience</label>
-                                <input type='number' name='experience' id='experience' placeholder='3' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='number' name='experience' id='experience' placeholder='3'
+                                    onChange={(e) => setExperience(e.target.value)}
+                                    className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
-                            <div className=' flex flex-col mb-6'>
+                            {/* <div className=' flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='video-url'>Video Url</label>
                                 <input type='text' name='video-url' id='video-url' placeholder='Video Url' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className='grid grid-cols-1 gap-x-4'>
                             <div className='flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='profile-photo'>Profile Photo</label>
-                                <input type='file' name='profile-photo' id='profile-photo' className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
+                                <input type='file' name='profile-photo' id='profile-photo'
+                                    onChange={(e) => setProfilePhoto(e.target.value)}
+                                    className='px-4 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20' />
                             </div>
                         </div>
 
                         <div className='grid grid-cols-1 gap-x-4'>
                             <div className='flex flex-col mb-6'>
                                 <label className='font-light text-sm mb-1' htmlFor='biography'>Biography</label>
-                                <textarea placeholder='Biography' className="min-h-16 max-h-40 resize-y px-3 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20"></textarea>
+                                <textarea placeholder='Biography'
+                                    onChange={(e) => setBiography(e.target.value)}
+                                    className="min-h-16 max-h-40 resize-y px-3 py-2 font-light border border-slate-600 border-opacity-15 outline-none rounded bg-[#8080801b] text-black placeholder:text-black placeholder:opacity-20"></textarea>
 
                             </div>
                         </div>
