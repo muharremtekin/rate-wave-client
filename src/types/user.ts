@@ -10,8 +10,7 @@ export interface Qualification {
   endDate: string;
 }
 
-export enum QualificationType
-{
+export enum QualificationType {
   Diploma = "Associate's Degree",
   Certificate = "Certificate",
   Degree = "Bachelor's Degree",
@@ -27,8 +26,8 @@ export interface SocialLink {
 
 export enum PhoneType {
   Home,
-  Work ,
-  Mobile ,
+  Work,
+  Mobile,
 }
 
 export function phoneTypeToString(type: PhoneType) {
@@ -53,6 +52,52 @@ export interface SocialLink {
   userId: string;
   socialLinkType: number;
 }
+// types/socialMedia.ts
+
+import { FaLinkedin, FaSquareInstagram, FaSquareXTwitter, FaYoutube, FaMedium, FaSquareGithub } from 'react-icons/fa6';
+
+export enum SocialLinkType {
+  LinkedIn = 0,
+  Instagram = 1,
+  Twitter = 2,
+  YouTube = 3,
+  Medium = 4,
+  GitHub = 5,
+}
+
+export const socialMediaPlatforms = {
+  [SocialLinkType.LinkedIn]: {
+    name: 'LinkedIn',
+    icon: FaLinkedin,
+    iconColor: 'text-[#0077B5]',
+  },
+  [SocialLinkType.Instagram]: {
+    name: 'Instagram',
+    icon: FaSquareInstagram,
+    iconColor: 'text-[#c13584]',
+  },
+  [SocialLinkType.Twitter]: {
+    name: 'Twitter',
+    icon: FaSquareXTwitter,
+    iconColor: 'text-[#1DA1F2]',
+  },
+  [SocialLinkType.YouTube]: {
+    name: 'YouTube',
+    icon: FaYoutube,
+    iconColor: 'text-[#FF0000]',
+  },
+  [SocialLinkType.Medium]: {
+    name: 'Medium',
+    icon: FaMedium,
+    iconColor: 'text-black',
+  },
+  [SocialLinkType.GitHub]: {
+    name: 'GitHub',
+    icon: FaSquareGithub,
+    iconColor: 'text-black',
+  },
+};
+
 
 export interface UserData {
   firstName: string;
@@ -72,7 +117,7 @@ export interface UserData {
   phoneNumbers: PhoneNumber[];
 }
 
-export interface Author{
+export interface Author {
   userName: string;
   fullName: string;
   profilePicture: string;

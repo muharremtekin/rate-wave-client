@@ -141,7 +141,7 @@ function Page() {
 
                 {/* Sidebar */}
                 <div
-                    className={`w-full mb-8 lg:mb-0 lg:w-1/4 h-auto lg:h-screen bg-white rounded
+                    className={`w-full mb-8 lg:mb-0 lg:w-1/4 h-auto lg:h-full bg-white rounded
                                 ${isSticky ? 'relative lg:top-10 lg:w-1/4' : 'relative'} 
                                 ${isVisible ? 'block' : 'hidden'} lg:block`}
                 >

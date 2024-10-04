@@ -38,8 +38,8 @@ function index({ name, title, about, mail, rate, star, reviewCount, numbers, qua
         <div>
             <div className='px-10'>
                 <div className='hidden lg:flex flex-col items-center my-6'>
-                    <h3 className='text-2xl font-semibold'>{name}</h3>
-                    <p className='text-xs font-light'>{title}</p>
+                    <h4 className='text-2xl font-semibold'>About</h4>
+                    {/* <p className='text-xs font-light'>{title}</p> */}
                 </div>
 
                 <div className=' h-px w-11/12 opacity-25 mx-auto bg-slate-400 mb-6'></div>

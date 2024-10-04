@@ -30,7 +30,7 @@ const Page: React.FC = () => {
                 return; // Prevent API request if validation fails
             }
 
-            const response = await api.post('/authentication', {
+            const response = await api.post('/tokens', {
                 "userName": username,
                 "password": password,
             });

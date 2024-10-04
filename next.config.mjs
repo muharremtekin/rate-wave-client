@@ -5,23 +5,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'media.licdn.com',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'linkedin.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cloudflare-ipfs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org',
+        protocol: 'http',
+        hostname: '**',
       }
     ],
   },

@@ -56,7 +56,7 @@ const SearchModal = ({
                                     className="h-10 w-10 rounded-full object-cover mr-4"
                                 />
                                 <div>
-                                    <Link href={'/profile/'+result.userName} rel="noopener noreferrer">
+                                    <Link href={'/profile/'+result.userName} target='_blank'>
                                         <p className="font-bold">
                                             {result.fullName} - {result.profession}
                                         </p>
