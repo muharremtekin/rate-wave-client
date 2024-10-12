@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import SideImage from '../components/login/side-image';
 import LoginForm from '../components/login/login-form';
 import api from '../../services/api';
+import ErrorPopup from '../components/common/error-popup';
 
 const Page: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -52,25 +52,31 @@ const Page: React.FC = () => {
     };
 
     return (
-        <div className='flex h-screen'>
-            <SideImage />
-            <LoginForm
-                showPassword={showPassword}
-                togglePasswordVisibility={togglePasswordVisibility}
-                username={username}
-                setUsername={setUsername}
-                password={password}
-                setPassword={setPassword}
-                handleSignIn={handleSignIn}
-            />
+        <div className="relative h-screen">
+            {/* Arka Plan Resmi ve Blur Efekti */}
+            {/* <div
+                className="absolute inset-0 bg-cover bg-center filter blur-sm z-0"
+                style={{ backgroundImage: "https://www.pexels.com/tr-tr/fotograf/deniz-kent-sehir-peyzaj-27230180/" }}
+            ></div> */}
+
+            {/* <SideImage /> */}
+            {/* Ortalanmış LoginForm */}
+            <div className="relative flex items-center justify-center  z-10 mt-2">
+                <LoginForm
+                    showPassword={showPassword}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                    username={username}
+                    setUsername={setUsername}
+                    password={password}
+                    setPassword={setPassword}
+                    handleSignIn={handleSignIn}
+                />
+            </div>
+
+            {/* Hata Popup'ı */}
             {showPopup && (
-                <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
-                    <div className='bg-white p-6 rounded shadow-lg'>
-                        <p>{errorMessage}</p>
-                        <button onClick={closePopup} className='mt-4 px-4 py-2 bg-blue-600 text-white rounded'>
-                            Close
-                        </button>
-                    </div>
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <ErrorPopup message={errorMessage} onClose={closePopup} />
                 </div>
             )}
         </div>

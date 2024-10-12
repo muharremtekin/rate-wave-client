@@ -50,7 +50,7 @@ function index({ name, title, about, mail, rate, star, reviewCount, numbers, qua
 
                 <div className='h-px w-20 mx-auto bg-slate-400'></div>
 
-                <div className='flex flex-col place-items-start my-6 '>
+                <div className='flex flex-col place-items-center my-6 '>
 
                     {
                         qualifications.map((qualification) => (

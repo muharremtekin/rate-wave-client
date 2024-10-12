@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const SideImage: React.FC = () => (
-    <div className='hidden lg:block w-2/3 h-full relative'>
+    <div className='absolute inset-0 bg-cover bg-center filter blur-sm z-0'>
         <Image
             src='/galata-kulesi.jpg'
             alt='Galata Kulesi'
