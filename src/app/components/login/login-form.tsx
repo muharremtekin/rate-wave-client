@@ -38,9 +38,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
             />
             <PasswordField
                 showPassword={showPassword}
-                togglePasswordVisibility={togglePasswordVisibility}
-                password={password}
-                setPassword={setPassword}
+                toggleShowPassword={togglePasswordVisibility}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                value={password}
+                
             />
             <RememberMe />
             <SignInButton />

@@ -51,13 +51,13 @@ function Page() {
         setShowPassword(!showPassword);
     };
     return (
-        <div className='w-full h-screen flex flex-row'>
-            <div className='hidden lg:block w-1/2 h-full relative'>
+        <div className='relative flex items-center justify-center  z-10 mt-2'>
+            {/* <div className='hidden lg:block w-1/2 h-full relative'>
                 <Image src='/moon-bg.jpg' alt='Manzara Fotoğrafı' width={2000} height={2000} quality={100} className='fixed w-1/2 h-full object-cover shadow-costum' />
                 <div className='fixed bottom-10 left-10 text-white bg-opacity-55 rounded backdrop-blur-sm text-xs px-3 py-1'>
                     <Link target='_blank' href={"https://www.pexels.com/tr-tr/fotograf/gun-batiminda-gosterilen-ayin-illustrasyonu-884788/"}>Photo by : <span className='underline'>David Besh</span></Link>
                 </div>
-            </div>
+            </div> */}
             <div className='w-full lg:w-1/2 px-10 py-2'>
                 <div className='mt-10'>
                     <p className='text-5xl font-bold text-slate-600'>

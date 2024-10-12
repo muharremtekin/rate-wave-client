@@ -8,7 +8,7 @@ type SearchModalProps = {
     searchTerm: string;
     setSearchTerm: (term: string) => void;
     searchResults: {
-        userName: number;
+        userName: string;
         fullName: string;
         profilePicture: string;
         profession: string;
