@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import ErrorPopup from '../common/error-popup';
+import api from '@/services/api';
+import { useAuth } from '@/context/AuthContext';
 
 interface UserData {
     firstName: string;
@@ -13,9 +16,10 @@ interface UserData {
 
 interface UserProfileFormProps {
     userData: UserData | null;
+    userName: string;
 }
 
-const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData }) => {
+const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, userName }) => {
     const [formData, setFormData] = useState<UserData>({
         firstName: '',
         lastName: '',
@@ -26,6 +30,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData }) => {
         emailAddress: '',
         userName: '',
     });
+
+    const { logout } = useAuth();
+
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
+    const [showPopup, setShowPopup] = useState(false); // State for popup visibility
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
 
     useEffect(() => {
         if (userData) {
@@ -43,10 +56,23 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData }) => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Form gönderimi ile ilgili işlemler burada yapılabilir
-        console.log('Form Data:', formData);
+
+        try {
+            const response = await api.put<UserData>('/users/' + userName, formData);
+            if (response.status === 200) {
+
+                if (userName !== userData?.userName)
+                    logout();
+
+                window.location.href = '/edit-profile';
+            }
+        } catch (error: any) {
+            setErrorMessage(error.response.data.Message);
+            setShowPopup(true);
+            console.error('Error updating user data:', error);
+        }
     };
 
     return (
@@ -86,6 +112,37 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData }) => {
                             className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
                         />
                     </div>
+                    {/* Email */}
+                    <div className="flex flex-col mb-6">
+                        <label className="font-light text-sm mb-1" htmlFor="emailAddress">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            name="emailAddress"
+                            id="emailAddress"
+                            placeholder="Email"
+                            value={formData.emailAddress}
+                            onChange={handleInputChange}
+                            className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
+                        />
+                    </div>
+                    {/* Kullanıcı Adı */}
+                    <div className="flex flex-col mb-6">
+                        <label className="font-light text-sm mb-1" htmlFor="userName">
+                            Kullanıcı Adı (Kullanıcı adını değiştirirsen yeniden giriş yapmak zorundasın)
+                        </label>
+                        <input
+                            type="text"
+                            name="userName"
+                            id="userName"
+                            placeholder="Kullanıcı Adı"
+                            value={formData.userName}
+                            onChange={handleInputChange}
+                            className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
+                        />
+                    </div>
+
                     {/* Meslek */}
                     <div className="flex flex-col mb-6">
                         <label className="font-light text-sm mb-1" htmlFor="profession">
@@ -141,6 +198,11 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData }) => {
                     Güncelle
                 </button>
             </form>
+            {showPopup && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <ErrorPopup message={errorMessage} onClose={closePopup} />
+                </div>
+            )}
         </div>
     );
 };
