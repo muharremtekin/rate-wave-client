@@ -1,14 +1,8 @@
-"use client";
+"use client"; 
 import Image from 'next/image';
 import Link from 'next/link';
 import Header from './components/common/header';
 
-interface SearchResult {
-  userName: number;
-  fullName: string;
-  profilePicture: string;
-  profession: string;
-}
 
 const HomePage: React.FC = () => {
 
