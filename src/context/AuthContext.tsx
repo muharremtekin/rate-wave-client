@@ -3,16 +3,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { jwtDecode } from "jwt-decode";
+import api from '@/services/api';
 
 export interface JwtPayload {
   sub: string;
   iat: number;
   exp: number;
-  Email: string;
-  UserName: string;
-  FirstName: string;
-  LastName: string;
-  ProfilePicture: string;
 }
 
 export interface AuthContextType {
@@ -35,18 +31,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (token) {
       setIsAuthenticated(true);
       const decodedToken = jwtDecode<JwtPayload>(token);
-      console.log(decodedToken);
       setPayloadData(decodedToken);
     }
   }, []);
 
   const login = (token: string) => {
     localStorage.setItem('authToken', token);
+    const decodedToken = jwtDecode<JwtPayload>(token);
+
+    setPayloadData(decodedToken);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
+    api.delete('/tokens');
     localStorage.removeItem('authToken');
+    setPayloadData(null);
     setIsAuthenticated(false);
     router.push('/login');
   };
