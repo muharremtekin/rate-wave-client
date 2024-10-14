@@ -155,7 +155,7 @@ function Page() {
                         <div className='text-2xl font-semibold flex justify-between items-center mb-10'>
                             <p>Reviews</p>
                             {
-                                (isAuthenticated && payloadData?.UserName != username) && 
+                                isAuthenticated &&
                                 <button
                                     onClick={openModal}
                                     className='text-xs lg:text-sm bg-blue-400 px-4 py-2 rounded text-white flex items-center gap-x-1'
