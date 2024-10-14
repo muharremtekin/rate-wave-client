@@ -1,7 +1,9 @@
+import api from '@/services/api';
 import { SocialLink, SocialLinkType } from '@/types/user';
+import { randomUUID } from 'crypto';
 import React, { useState, useEffect } from 'react';
 import { FaLinkedin, FaSquareInstagram, FaSquareXTwitter, FaYoutube, FaMedium, FaSquareGithub } from 'react-icons/fa6';
-
+import ErrorPopup from '../common/error-popup';
 
 
 interface SocialLinksFormProps {
@@ -10,28 +12,54 @@ interface SocialLinksFormProps {
 
 const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ socialLinks }) => {
     const [formLinks, setFormLinks] = useState<SocialLink[]>(socialLinks || []);
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
+    const [showPopup, setShowPopup] = useState(false); // State for popup visibility
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
+
 
     useEffect(() => {
         if (socialLinks)
             setFormLinks(socialLinks);
     }, [socialLinks]);
 
-    const handleSocialLinkChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        socialLinkType: SocialLinkType
-    ) => {
-        const updatedLinks = formLinks.map(link =>
-            link.socialLinkType === socialLinkType
-                ? { ...link, url: e.target.value }
-                : link
-        );
-        setFormLinks(updatedLinks);
+    const handleSocialLinkChange = (e: React.ChangeEvent<HTMLInputElement>, type: SocialLinkType) => {
+        setFormLinks((prevLinks) => {
+            const existingLinkIndex = prevLinks.findIndex(link => link.socialLinkType === type);
+
+            if (existingLinkIndex !== -1) {
+                // Link mevcutsa güncelle
+                const updatedLinks = [...prevLinks];
+                updatedLinks[existingLinkIndex] = { ...updatedLinks[existingLinkIndex], url: e.target.value };
+                return updatedLinks;
+            } else {
+                // Link mevcut değilse ekle
+                return [...prevLinks, { id: '00000000-0000-0000-0000-000000000000', userId: '', socialLinkType: type, url: e.target.value }];
+            }
+        });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Form gönderimi ile ilgili işlemler burada yapılabilir
-        console.log('Social Links Data:', formLinks);
+        const socialLinks = formLinks.map(link => ({
+            id: link.id,
+            socialLinkType: link.socialLinkType,
+            url: link.url,
+        }));
+
+        console.log(socialLinks);
+
+        try {
+            const response = await api.put('/social-links', { socialLinks: socialLinks });
+            if (response.status === 200) {
+                window.location.reload();
+            }
+        } catch (error: any) {
+            setErrorMessage(error.response.data.Message);
+            setShowPopup(true);
+        }
     };
 
     return (
@@ -104,6 +132,11 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ socialLinks }) => {
                     Güncelle
                 </button>
             </form>
+            {showPopup && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <ErrorPopup message={errorMessage} onClose={closePopup} />
+                </div>
+            )}
         </div>
     );
 };
