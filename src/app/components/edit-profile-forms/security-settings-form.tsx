@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import PasswordInput from '../login/password-field';
+import api from '@/services/api';
+import ErrorPopup from '../common/error-popup';
 
 const SecuritySettingsForm: React.FC = () => {
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
+    const [showPopup, setShowPopup] = useState(false); // State for popup visibility
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
+
+
     const [passwords, setPasswords] = useState({
         lastPassword: '',
         newPassword: '',
@@ -10,7 +19,7 @@ const SecuritySettingsForm: React.FC = () => {
     });
 
     const [showPassword, setShowPassword] = useState({
-        lastPassword: false,
+        oldPassword: false,
         newPassword: false,
     });
 
@@ -19,9 +28,26 @@ const SecuritySettingsForm: React.FC = () => {
             ? passwords.newPassword === passwords.confirmPassword
             : null;
 
-    const handlePasswordUpdate = () => {
+    const handlePasswordUpdate = async () => {
         // Şifre güncelleme işlemleri burada yapılabilir
-        console.log('Şifreler güncellendi:', passwords);
+
+        try {
+            const response = await api.put('/passwords', {
+                oldPassword: passwords.lastPassword,
+                newPassword: passwords.newPassword,
+            })
+            
+            setPasswords({
+                lastPassword: '',
+                newPassword: '',
+                confirmPassword: '',
+            });
+        } catch (error: any) {
+            setErrorMessage(error.response.data.Message);
+            setShowPopup(true);
+            console.error('Error changing password:', error);
+        }
+
     };
 
     const toggleShowPassword = (field: keyof typeof showPassword) => {
@@ -33,14 +59,14 @@ const SecuritySettingsForm: React.FC = () => {
             <h2 className="mt-24 my-8 text-xl font-normal px-10">Güvenlik Ayarları</h2>
             <div className="w-full h-px px-10 bg-slate-200 mb-6"></div>
             <form className="px-2 lg:px-10 mb-10" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 gap-x-0 lg:gap-x-10">
+                <div className="grid grid-cols-2 gap-x-0 lg:gap-x-10">
                     <PasswordInput
                         label="Eski Şifre"
                         name="lastPassword"
                         value={passwords.lastPassword}
-                        showPassword={showPassword.lastPassword}
+                        showPassword={showPassword.oldPassword}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPasswords({ ...passwords, lastPassword: e.target.value })}
-                        toggleShowPassword={() => toggleShowPassword('lastPassword')}
+                        toggleShowPassword={() => toggleShowPassword('oldPassword')}
                     />
                     <PasswordInput
                         label="Yeni Şifre"
@@ -87,6 +113,11 @@ const SecuritySettingsForm: React.FC = () => {
                     Şifreyi Güncelle
                 </button>
             </form>
+            {showPopup && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <ErrorPopup message={errorMessage} onClose={closePopup} />
+                </div>
+            )}
         </div>
     );
 };

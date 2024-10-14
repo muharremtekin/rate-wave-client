@@ -5,6 +5,7 @@ import { IoSearch } from 'react-icons/io5';
 import { useAuth } from '@/context/AuthContext';
 import SearchModal from '../search-modal';
 import api from '@/services/api';
+import { UserData } from '@/types/user';
 
 interface SearchResult {
     userName: string;
@@ -18,8 +19,8 @@ const Header: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isAuthenticated, logout, payloadData } = useAuth();
-
+    const { isAuthenticated, logout } = useAuth();
+    const [currentUser, setCurrentUser] = useState<UserData | null>();
 
     const handleSearchClick = () => {
         setIsModalOpen(true);
@@ -28,6 +29,23 @@ const Header: React.FC = () => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    useEffect(() => { 
+        const fetchCurrentUser = async () => {
+            if (isAuthenticated) {
+                try {
+                    const response = await api.get('/users/me');
+                    console.log(response.data);
+                    setCurrentUser(response.data);
+                } catch (error) {
+                    console.error('Kullanıcı bilgileri alınırken bir hata oluştu:', error);
+                }
+            }
+        };
+
+        fetchCurrentUser();
+    }, [isAuthenticated]);
+
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -42,8 +60,6 @@ const Header: React.FC = () => {
                     const response = await api.get(
                         `/users?PageNumber=1&PageSize=10&SearchTerm=${searchTerm}`
                     );
-                    console.log(response.data);
-                    console.log(payloadData?.FirstName);
                     setSearchResults(response.data);
                 } catch (error) {
                     console.error('Arama sonuçları alınırken bir hata oluştu:', error);
@@ -103,10 +119,10 @@ const Header: React.FC = () => {
                                         aria-haspopup="true"
                                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                                     >
-                                        {payloadData?.ProfilePicture ? (
+                                        {currentUser?.profilePicture ? (
                                             <Image
                                                 className="h-10 w-10 object-cover rounded-full"
-                                                src={payloadData.ProfilePicture}
+                                                src={currentUser.profilePicture}
                                                 width={40}
                                                 height={40}
                                                 quality={100}
@@ -115,7 +131,7 @@ const Header: React.FC = () => {
                                         ) : (
                                             <div className="h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center">
                                                 <span className="text-gray-600">
-                                                    {payloadData?.FirstName?.charAt(0) || 'K'}
+                                                    {currentUser?.firstName?.charAt(0) || 'K'}
                                                 </span>
                                             </div>
                                         )}
@@ -130,13 +146,13 @@ const Header: React.FC = () => {
                                         aria-labelledby="menu-button"
                                     >
                                         <div className="py-1" role="none">
-                                            <Link href={`/profile/${payloadData?.UserName}`} legacyBehavior >
+                                            <Link href={`/profile/${currentUser?.userName}`} legacyBehavior >
                                                 <a
                                                     className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
                                                     role="menuitem"
                                                     onClick={() => setIsMenuOpen(false)}
                                                 >
-                                                    Profilim {payloadData?.FirstName || 'Kullanıcı'}
+                                                    Profilim {currentUser?.firstName || 'Kullanıcı'}
                                                 </a>
                                             </Link>
                                             <Link href="/edit-profile" legacyBehavior>

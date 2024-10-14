@@ -6,16 +6,31 @@ export interface Qualification {
   name: string;
   institution: string;
   verificationLink: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 export enum QualificationType {
-  Diploma = "Associate's Degree",
-  Certificate = "Certificate",
-  Degree = "Bachelor's Degree",
-  License = "License",
+  Diploma,
+  Certificate,
+  Degree,
+  License,
 }
+
+export function qualificationTypeToString(type: QualificationType) {
+  switch (type) {
+    case QualificationType.Diploma:
+      return "Diploma";
+    case QualificationType.Certificate:
+      return "Certificate";
+    case QualificationType.Degree:
+      return "Degree";
+    case QualificationType.License:
+      return "License";
+  }
+}
+
+
 
 export interface SocialLink {
   id: string;

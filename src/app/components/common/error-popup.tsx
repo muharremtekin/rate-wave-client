@@ -7,7 +7,7 @@ interface ErrorPopupProps {
 
 const ErrorPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
     return (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center' id='error_popup'>
             <div className='bg-white p-6 rounded shadow-lg max-w-md w-full'>
                 <p>{message}</p>
                 <button
