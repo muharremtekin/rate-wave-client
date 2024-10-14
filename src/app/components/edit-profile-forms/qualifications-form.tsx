@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { LuPlusCircle } from 'react-icons/lu';
-import { Qualification, QualificationType } from '@/types/user';
-
-
+import { Qualification, QualificationType, qualificationTypeToString } from '@/types/user';
+import api from '@/services/api';
+import ErrorPopup from '../common/error-popup';
 
 interface QualificationsFormProps {
     qualifications: Qualification[] | null;
@@ -11,6 +11,13 @@ interface QualificationsFormProps {
 
 const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications }) => {
     const [formQualifications, setFormQualifications] = useState<Qualification[]>(qualifications || []);
+
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
+    const [showPopup, setShowPopup] = useState(false); // State for popup visibility
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
 
     useEffect(() => {
         if (qualifications) {
@@ -23,14 +30,21 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
         index: number,
         field: keyof Qualification
     ) => {
-        const updatedQualifications = [...formQualifications];
-        if (field === 'type') {
-            updatedQualifications[index][field] = e.target.value as QualificationType;
-        } else {
-            updatedQualifications[index][field] = e.target.value;
-        }
-        setFormQualifications(updatedQualifications);
+        setFormQualifications((prevQualifications) => {
+            return prevQualifications.map((qualification, idx) => {
+                if (idx !== index) return qualification;
+
+                let updatedValue: any = e.target.value;
+                if (field === 'type') {
+                    updatedValue = parseInt(e.target.value, 10) as QualificationType;
+                }
+
+                return { ...qualification, [field]: updatedValue };
+            });
+        });
     };
+
+
 
     const removeQualification = (id: string) => {
         setFormQualifications(formQualifications.filter(qualification => qualification.id !== id));
@@ -38,27 +52,34 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
 
     const addQualification = () => {
         const newQualification: Qualification = {
-            id: Math.random().toString(36).substr(2, 9),
+            id: '00000000-0000-0000-0000-000000000000',
             type: QualificationType.Certificate,
             name: '',
             institution: '',
             verificationLink: '',
-            startDate: '',
-            endDate: '',
+            startDate: null,
+            endDate: null,
         };
         setFormQualifications([...formQualifications, newQualification]);
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Form gönderimi ile ilgili işlemler burada yapılabilir
-        console.log('Qualifications Data:', formQualifications);
+        try {
+            const data = { qualifications: formQualifications }
+            console.log(data);
+            const response = await api.put('/qualifications', data);
+            if (response.status === 200) {
+                console.log('Qualifications updated successfully');
+                window.location.reload();
+            }
+        } catch (error: any) {
+            setErrorMessage(error.response.data.Message);
+            setShowPopup(true);
+        }
     };
 
-    const formatDate = (dateString: string) => {
-        const [month, year] = dateString.split('-');
-        return `${year}-${month}`;
-    };
 
     return (
         <div>
@@ -113,10 +134,11 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
                                 Başlangıç Tarihi
                             </label>
                             <input
-                                type="month"
+                                type="date"
                                 name={`startDate-${qualification.id}`}
                                 id={`startDate-${qualification.id}`}
-                                value={qualification.startDate ? formatDate(qualification.startDate) : ''}
+                                value={qualification.startDate ? new Date(qualification.startDate).toISOString().split('T')[0] : ''}
+
                                 onChange={(e) => handleInputChange(e, index, 'startDate')}
                                 className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
                             />
@@ -127,10 +149,10 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
                                 Bitiş Tarihi
                             </label>
                             <input
-                                type="month"
+                                type="date"
                                 name={`endDate-${qualification.id}`}
                                 id={`endDate-${qualification.id}`}
-                                value={qualification.endDate ? formatDate(qualification.endDate) : ''}
+                                value={qualification.endDate ? new Date(qualification.endDate).toISOString().split('T')[0] : ''}
                                 onChange={(e) => handleInputChange(e, index, 'endDate')}
                                 className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
                             />
@@ -162,11 +184,13 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
                                 onChange={(e) => handleInputChange(e, index, 'type')}
                                 className="px-4 py-2 font-light border outline-none rounded bg-[#8080801b]"
                             >
-                                {Object.values(QualificationType).map((type) => (
-                                    <option key={type} value={type}>
-                                        {type}
-                                    </option>
-                                ))}
+                                {Object.values(QualificationType)
+                                    .filter((type) => typeof type === 'number')
+                                    .map((type) => (
+                                        <option key={type} value={type}>
+                                            {qualificationTypeToString(type as QualificationType)}
+                                        </option>
+                                    ))}
                             </select>
                         </div>
                     </div>
@@ -186,6 +210,11 @@ const QualificationsForm: React.FC<QualificationsFormProps> = ({ qualifications 
                     />
                 </div>
             </form>
+            {showPopup && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <ErrorPopup message={errorMessage} onClose={closePopup} />
+                </div>
+            )}
         </div>
     );
 };
