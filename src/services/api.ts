@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const localBaseURL = 'https://localhost:8081/api';
-const productionBaseURL = 'http://164.92.178.240:8080/api'; 
+const productionBaseURL = 'https://ratewave.muharremtekin.com/api'; 
 // Create an Axios instance
 const api = axios.create({
   baseURL: localBaseURL,
